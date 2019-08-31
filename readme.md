@@ -4,7 +4,7 @@
 Refer this link:
 https://flask.palletsprojects.com/en/1.1.x/quickstart/
 
-## 2. To configure the flask server refer to the comments inside the code
+## 2. To configure the application server refer to the comments inside the code
 
 ## 3. Post request format
    Recommended to use POSTMAN just for testing purposes
