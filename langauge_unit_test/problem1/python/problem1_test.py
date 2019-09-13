@@ -1,19 +1,19 @@
-import problem2
+import problem1
 
 counter = 0
 
 def testEasy():
-    testOutput = problem2.FirstFactorial(4)
+    testOutput = problem1.LongestWord("I love dogs")
 
-    if testOutput == 24:
+    if testOutput == "love":
         return 1
     else:
         return 0
 
 def testHard():
-    testOutput = problem2.FirstFactorial(8)
+    testOutput = problem1.LongestWord("fun&!! time")
 
-    if testOutput == 40320:
+    if testOutput == "time":
         return 3
     else:
         return 0
