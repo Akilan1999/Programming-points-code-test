@@ -6,7 +6,9 @@ from flask import Flask, request, jsonify
 app = Flask(__name__)
 import subprocess
 import os
+import signal
 import json
+import time
 from datetime import datetime
 from shutil import copyfile
 
@@ -70,15 +72,31 @@ def postsolution():
 
        #print(file.content_type)
        # temporary way for doing unit test hence required to add to if statement for more langauges
-        if file.content_type == "text/x-java-source":
+        if file.content_type == "text/x-java-source":    
              print("java")
 
         elif file.content_type == "application/octet-stream":
              file.save(os.path.join('langauge_unit_test/problem'+problem_no+'/python', file.filename))
              test_dir_file_path = os.path.join('langauge_unit_test/problem'+problem_no+'/python', file.filename)
              test_path = 'langauge_unit_test/problem'+problem_no+'/python/problem'+problem_no+'_test.py'
-             result = subprocess.run(['python3',test_path], stdout=subprocess.PIPE)
-             points = result.stdout
+             result = subprocess.Popen(['python3',test_path], stdout=subprocess.PIPE, preexec_fn=os.setsid)
+
+             #Maximum amount of a time that a process can run for
+             i = 0
+              
+             while 1:
+                     r = result.poll()
+                     print(i)
+                     if r is not None:
+                             break
+                     elif i > 20:
+                             print("here")
+                             os.killpg(os.getpgid(result.pid), signal.SIGTERM)
+                             break
+                     i+=1
+                     time.sleep(1) 
+
+             points = result.communicate()[0]
 
         #Creates a directory for user or adds code to exsisting directory
         if os.path.isdir("code_files/"+username):
@@ -100,7 +118,7 @@ def postsolution():
              #Removes file from the test directory
              os.remove(test_dir_file_path)
 
-            #Add points and datetime stamp to file
+            #Add points and datetime stamp to files
              now = datetime.now()
              dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
 
